@@ -16,9 +16,19 @@
 
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import parse_qs
+import os
 
-
+__dirname__ = os.path.dirname(__file__)
 class MessageHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header('content-type', 'text/html; charset=utf-8')
+        self.end_headers()
+
+        with open(os.path.join(__dirname__, 'Messageboard.html')) as page:
+            res = page.read()
+            self.wfile.write(res.encode())
+            
     def do_POST(self):
         # How long was the message?
         length = int(self.headers.get('Content-length', 0))
@@ -27,7 +37,7 @@ class MessageHandler(BaseHTTPRequestHandler):
         data = self.rfile.read(length).decode()
 
         # Extract the "message" field from the request data.
-        message = parse_qs(data)["message"][0]
+        message = parse_qs(data).get("message", [""])[0]
 
         # Send the "message" field back as the response.
         self.send_response(200)
