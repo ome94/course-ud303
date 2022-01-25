@@ -18,13 +18,13 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import parse_qs
 import os
 
-__dirname__ = os.path.dirname(__file__)
 class MessageHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
         self.send_header('content-type', 'text/html; charset=utf-8')
         self.end_headers()
 
+        __dirname__ = os.path.dirname(__file__)
         with open(os.path.join(__dirname__, 'Messageboard.html')) as page:
             res = page.read()
             self.wfile.write(res.encode())
